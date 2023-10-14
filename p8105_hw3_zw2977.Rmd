@@ -1,0 +1,172 @@
+---
+title: "p8105_hw3_zw2977"
+author: "Ziqi Wang"
+date: "2023-10-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+
+
+
+Problem 2
+
+
+```{r}
+library(dplyr)
+
+devtools::install_github("p8105/p8105.datasets")
+
+library(p8105.datasets)
+
+library(ggplot2)
+
+data("brfss_smart2010")
+```
+
+```{r}
+names(brfss_smart2010)
+
+brfss_smart2010.x <- brfss_smart2010 %>%
+                     filter(Topic == "Overall Health") %>%
+                     mutate(Response = factor(Response, levels = c("Poor", "Fair", "Good", "Very Good", "Excellent")))
+
+table(brfss_smart2010.x$Response)
+```
+
+
+```{r}
+brfss_smart2010.x %>% filter(Year == 2002) %>%
+                      group_by(Locationabbr) %>%
+                      summarise(x = n()) %>%
+                      filter(x >= 7)
+
+
+
+
+brfss_smart2010.x1 <- brfss_smart2010.x %>%
+                      filter(Response == "Excellent") %>%
+                      select(Year, Locationabbr, Data_value) %>%
+                      group_by(Year, Locationabbr) %>%
+                      summarise(mean = mean(Data_value))
+
+
+ggplot(brfss_smart2010.x1, aes(x = Year, y = mean, group =  Locationabbr, color = Locationabbr )) +
+  geom_line() +
+  ylab("Mean of Data Value")
+
+ 
+brfss_smart2010.x2 <- brfss_smart2010.x %>%
+                      filter(Year %in% c(2006, 2010)) %>%
+                      group_by(Locationabbr) %>%
+                      summarise(x = n()) %>%
+                      filter(x >= 7)
+
+
+
+brfss_smart2010.x2 <- brfss_smart2010.x %>%
+  filter(Year %in% c(2006, 2010)) %>%
+  filter(Locationabbr == "NY")
+
+
+ggplot(brfss_smart2010.x2, aes(x=Data_value, fill = Response)) +   
+       geom_density(alpha=.3) +
+       facet_grid(Year ~ .)            
+
+```
+
+ Problem 3
+ 
+```{r}
+
+library(readr)
+
+nhanes_accel <- read_csv("C:/hw3/nhanes_accel (1).csv")
+
+nhanes_covar <- read_csv("C:/hw3/nhanes_covar (2).csv", skip = 4)
+
+```
+ 
+ 
+```{r}
+library(tidyverse)
+
+
+data <- nhanes_covar %>%
+  left_join(nhanes_accel) %>%
+  filter(age >= 21) %>%
+  drop_na(sex, age, BMI, education) %>%
+  mutate(sex = ifelse(sex == 1, "male", "female"),
+    education = case_when(education == 1 ~ "Less than high school",
+                          education == 2 ~ "High school equivalent",
+                          education == 3 ~ "More than high school"),
+   education = factor(education, levels = c("Less than high school",
+                                         "High school equivalent",
+                                         "More than high school")))
+                                         
+ 
+
+table(data$sex, data$education)                                        
+                          
+ggplot(data, aes(x=age, fill = education)) +   
+       geom_density(alpha=.3) +
+       facet_grid(sex ~ .) 
+
+ggplot(data, aes(x=age, fill = sex)) +   
+       geom_density(alpha=.3) +
+       facet_grid(education ~ .)
+
+data1 <- data %>%
+  mutate(total.activity = rowSums(across(min1:min1440), na.rm = T))
+
+ggplot(data1, aes(x = age, y = total.activity, color = education)) +
+       geom_smooth(alpha = .3) + facet_grid(sex ~ .)
+
+
+```
+As age increases, the amount of exercise for male and female with three different educational backgrounds continues to decrease. There was a significant difference in the amount of exercise between the three groups of people when they were young, but as they grew older, the gap continued to narrow. In the end, the amount of exercise among the three groups was almost the same. Among male, "Lesson than high" has the highest total activity from young to old. Among female, the total activity of "less than high school" decreased much faster than that of male. The change range of "High school equlvalent" is larger than that of male.
+ 
+ 
+ 
+ 
+```{r}
+data2 <- data %>%
+  pivot_longer(cols = starts_with("min"),
+  names_to = "time",
+  values_to = "value",
+  values_drop_na = TRUE
+  )
+
+data2$timex <- as.numeric(gsub("min", "", data2$time))
+
+ggplot(data2, aes(x = timex, y = value, color = sex)) +
+  geom_smooth(alpha = .3) + facet_grid(education ~ .)
+  
+  
+```
+ common
