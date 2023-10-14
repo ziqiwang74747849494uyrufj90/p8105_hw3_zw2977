@@ -149,6 +149,20 @@ ggplot(data1, aes(x = age, y = total.activity, color = education)) +
 
 
 ```
+
+
+The density plot reveals differences between male and female in three education groups:
+
+Less than High School: The density plot shows that there is no significant difference between the distributions of male and female in this education group. 
+High School Equivalent: In this category, the density plot suggests a noticeable difference in the distribution of male and female, which have a relative opposite distribution.
+
+More than High School: The density plot indicates that in this study, there are more female at an early age, around 30, who show a higher tendency to attend the program.
+
+
+
+
+In totally activity graph:
+
 As age increases, the amount of exercise for male and female with three different educational backgrounds continues to decrease. There was a significant difference in the amount of exercise between the three groups of people when they were young, but as they grew older, the gap continued to narrow. In the end, the amount of exercise among the three groups was almost the same. Among male, "Lesson than high" has the highest total activity from young to old. Among female, the total activity of "less than high school" decreased much faster than that of male. The change range of "High school equlvalent" is larger than that of male.
  
  
@@ -169,4 +183,10 @@ ggplot(data2, aes(x = timex, y = value, color = sex)) +
   
   
 ```
- common
+ The last plot shows the activity levels of male and female in each education level along with their wearing time of 24 hours:
+
+Less than High School: No clear difference can be observed between the two genders in this category.
+
+High School Equivalent: female tend to be more active than male after around 8 hours, and this difference lasts for another 8 hours.
+
+More than High School: female tend to be more active than male after around 8 hours, and this difference persists until almost the end of the measurement.
