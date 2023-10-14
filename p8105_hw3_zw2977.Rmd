@@ -133,9 +133,7 @@ data <- nhanes_covar %>%
 
 table(data$sex, data$education)                                        
                           
-ggplot(data, aes(x=age, fill = education)) +   
-       geom_density(alpha=.3) +
-       facet_grid(sex ~ .) 
+ 
 
 ggplot(data, aes(x=age, fill = sex)) +   
        geom_density(alpha=.3) +
